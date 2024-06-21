@@ -13,6 +13,8 @@ code_quality:
   script:
     - node_modules/eslint/bin/eslint.js --format gitlab src/
     - ls
+    - ls src 
+    - ls reports
     - mv gl-codequality.json reports/gl-codequality.json
   artifacts:
     reports:
