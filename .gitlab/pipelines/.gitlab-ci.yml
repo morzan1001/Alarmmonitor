@@ -112,6 +112,6 @@ deploy-helm-chart:
   before_script:
     - chmod 600 /builds/morzan1001/alarmmonitor.tmp/KUBECONFIG
   script:
-    - kubectl config use-context alarmmonitor/helm:alarmmonitor-agent
+    - kubectl config use-context morzan1001/alarmmonitor:alarmmonitor-agent
     - echo -n ${HARBOR_PASSWORD} | helm registry login --username=${HARBOR_USERNAME} --password-stdin ${HARBOR_HOST}
     - helm upgrade --install user oci://harbor.runforest.run/alarmmonitor/alarmmonitor -n alarmmonitor
