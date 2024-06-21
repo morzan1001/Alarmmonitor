@@ -9,11 +9,13 @@ imagePullSecrets:
   - name: regcred
 nameOverride: ""
 fullnameOverride: ""
+
 serviceAccount:
   create: true
   automount: true
   annotations: {}
   name: ""
+
 podAnnotations: {}
 podLabels: {}
 podSecurityContext: {}
@@ -52,6 +54,7 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
+
 livenessProbe:
   httpGet:
     path: /
@@ -60,8 +63,8 @@ readinessProbe:
   httpGet:
     path: /
     port: http
-autoscaling:
 
+autoscaling:
   enabled: false
   minReplicas: 1
   maxReplicas: 100
