@@ -15,7 +15,7 @@ L.Icon.Default.mergeOptions({
     'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-const WebSocketURL = 'ws://116.203.84.208:8000/ws';
+const WebSocketURL = 'wss://116.203.84.208:8000/ws';
 
 interface MapData {
   Latitude: number;
