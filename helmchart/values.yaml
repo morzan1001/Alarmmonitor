@@ -38,13 +38,13 @@ ingress:
           pathType: ImplementationSpecific
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.middlewares: kube-system-compress@kubernetescrd, kube-system-ratelimit@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: kube-system-compress@kubernetescrd, kube-system-ratelimit@kubernetescrd, kube-system-alarmmonitor-basicauth@kubernetescrd
   ingressClassName: traefik
   tls:
     - secretName: alarmmonitor-runforest-run-tls
       hosts:
         - alarmmonitor.runforest.run
-        
+
 resources:
   limits:
     cpu: 200m
