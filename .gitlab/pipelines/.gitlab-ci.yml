@@ -101,7 +101,7 @@ publish-helm-chart:
     - chmod 600 /builds/morzan1001/alarmmonitor.tmp/KUBECONFIG
   script:
     - echo -n ${HARBOR_PASSWORD} | helm registry login --username=${HARBOR_USERNAME} --password-stdin ${HARBOR_HOST}
-    - helm package $CI_PROJECT_DIR/alarmmonitor
+    - helm package $CI_PROJECT_DIR/helmchart
     - helm push $CI_PROJECT_DIR/alarmmonitor-0.1.0.tgz oci://harbor.runforest.run/alarmmonitor
 
 deploy-helm-chart:
