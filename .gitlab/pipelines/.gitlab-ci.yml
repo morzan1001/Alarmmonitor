@@ -92,3 +92,26 @@ merge-manifests:
       --template ${HARBOR_HOST}/${HARBOR_PROJECT}/${CI_PROJECT_NAME}:ARCH
       --target ${HARBOR_HOST}/${HARBOR_PROJECT}/${CI_PROJECT_NAME}:latest
 
+publish-helm-chart:
+  stage: build
+  image:
+    name: alpine/helm:latest
+    entrypoint: ['']
+  before_script:
+    - chmod 600 /builds/alarmmonitor/helm.tmp/KUBECONFIG
+  script:
+    - echo -n ${HARBOR_PASSWORD} | helm registry login --username=${HARBOR_USERNAME} --password-stdin ${HARBOR_HOST}
+    - helm package $CI_PROJECT_DIR/user
+    - helm push $CI_PROJECT_DIR/alarmmonitor-0.1.0.tgz oci://harbor.runforest.run/alarmmonitor
+
+deploy-helm-chart:
+  stage: deploy
+  image:
+    name: dtzar/helm-kubectl
+    entrypoint: ['']
+  before_script:
+    - chmod 600 /builds/alarmmonitor/helm.tmp/KUBECONFIG
+  script:
+    - kubectl config use-context alarmmonitor/helm:alarmmonitor-agent
+    - echo -n ${HARBOR_PASSWORD} | helm registry login --username=${HARBOR_USERNAME} --password-stdin ${HARBOR_HOST}
+    - helm upgrade --install user oci://harbor.runforest.run/alarmmonitor/alarmmonitor -n alarmmonitor
