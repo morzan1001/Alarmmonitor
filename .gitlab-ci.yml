@@ -1,0 +1,95 @@
+stages:
+  - test
+  - report
+  - build
+  - deploy
+
+code_quality:
+  stage: test
+  image: "node:alpine"
+  before_script:
+    - mkdir -p reports
+    - npm install eslint eslint-plugin-react eslint-formatter-gitlab
+  script:
+    - node_modules/eslint/bin/eslint.js --format gitlab src/
+    - mv gl-codequality.json reports/gl-codequality.json
+  artifacts:
+    reports:
+      codequality: reports/gl-codequality.json
+
+
+sonarqube-check:
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  stage: report
+  allow_failure: true
+  variables:
+    KUBERNETES_NODE_SELECTOR_ARCH: 'kubernetes.io/arch=amd64'
+    GIT_DEPTH: 0
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - sonar-scanner
+      -Dsonar.token=${SONAR_TOKEN}
+      -Dsonar.projectKey=${SONAR_PROJECT_KEY}
+      -Dsonar.projectName="${CI_PROJECT_TITLE}"
+      -Dsonar.sources=src
+
+sonarqube-vulnerability-report:
+  image: curlimages/curl:latest
+  stage: report
+  script:
+    - 'curl -u "${SONAR_TOKEN}:" "${SONAR_HOST_URL}/api/issues/gitlab_sast_export?projectKey=${SONAR_PROJECT_KEY}&branch=${CI_COMMIT_BRANCH}&pullRequest=${CI_MERGE_REQUEST_IID}" -o gl-sast-sonar-report.json'
+  allow_failure: true
+  artifacts:
+    expire_in: 1 day
+    reports:
+      sast: gl-sast-sonar-report.json
+  dependencies:
+    - sonarqube-check
+
+build-container:
+  stage: build
+  parallel:
+    matrix:
+      - ARCH: amd64
+      - ARCH: arm64
+  variables:
+    KUBERNETES_NODE_SELECTOR_ARCH: 'kubernetes.io/arch=$ARCH'
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"${HARBOR_HOST}\":{\"auth\":\"$(echo -n ${HARBOR_USERNAME}:${HARBOR_PASSWORD} | base64)\"}}}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --destination "${HARBOR_HOST}/${HARBOR_PROJECT}/${CI_PROJECT_NAME}:${ARCH}"
+
+merge-manifests:
+  stage: build
+  needs:
+    - build-container
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  image:
+    name: mplatform/manifest-tool:alpine
+    entrypoint: [""]
+  script:
+    - >-
+      manifest-tool
+      --username=${HARBOR_USERNAME}
+      --password=${HARBOR_PASSWORD}
+      push from-args
+      --platforms linux/amd64,linux/arm64
+      --template ${HARBOR_HOST}/${HARBOR_PROJECT}/${CI_PROJECT_NAME}:ARCH
+      --target ${HARBOR_HOST}/${HARBOR_PROJECT}/${CI_PROJECT_NAME}:latest
+
