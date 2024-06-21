@@ -12,6 +12,7 @@ code_quality:
     - npm install eslint eslint-plugin-react eslint-formatter-gitlab
   script:
     - node_modules/eslint/bin/eslint.js --format gitlab src/
+    - ls
     - mv gl-codequality.json reports/gl-codequality.json
   artifacts:
     reports:
