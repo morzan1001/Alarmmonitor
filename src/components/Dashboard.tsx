@@ -21,7 +21,7 @@ interface MapData {
   coordinates: {
     lat: number;
     lng: number;
-  }
+  };
 }
 
 interface DashboardData {
@@ -29,31 +29,35 @@ interface DashboardData {
   keyword: string;
   description: string;
   vehicles: string[];
+  sondersignal: string;
 }
 
 const MapUpdater: React.FC<{ destination: MapData }> = ({ destination }) => {
   const map = useMap();
   useEffect(() => {
-    map.setView([destination.coordinates.lng, destination.coordinates.lat], 16);
+    map.setView(
+      [destination?.coordinates?.lng || 0, destination?.coordinates?.lat || 0],
+      16
+    );
   }, [destination, map]);
 
   return null;
 };
 
 const Dashboard: React.FC = () => {
-  const [coordinates, setCoordinates] = useState<MapData>({
-    Latitude: 50.761952,
-    Longitude: 7.049516,
+  const [destination, setDestination] = useState<MapData>({
+    coordinates: {
+      lat: 0,
+      lng: 0,
+    },
   });
   const [keyword, setKeyword] = useState<string>('Alarmstichwort');
-  const [description, setDescription] = useState<string>(
-    'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rerum maiores atque sunt possimus nisi id fugiat pariatur, architecto laboriosam. Necessitatibus itaque, assumenda id nobis consectetur tempore placeat at inventore totam.'
-  );
+  const [description, setDescription] = useState<string>('');
   const [vehicles, setTableContent] = useState<string[]>([
     'Fahrzeug 1',
     'Fahrzeug 2',
   ]);
-
+  const [sonderSignal, setSonderSignal] = useState('');
   useEffect(() => {
     const ws = new WebSocket(WebSocketURL);
 
@@ -65,10 +69,11 @@ const Dashboard: React.FC = () => {
       try {
         const data: DashboardData = JSON.parse(event.data);
         console.log('Parsed data:', data);
-        setCoordinates(data.ziel.coordinates);
+        setDestination(data.ziel || {});
         setKeyword(data.keyword);
-        setDescription(data.description);
+        setDescription(data?.description);
         setTableContent(data.vehicles);
+        setSonderSignal(data?.sondersignal);
       } catch (error) {
         console.error('Error parsing WebSocket message:', error);
       }
@@ -89,28 +94,59 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className='flex h-screen bg-gray-900 text-white'>
+      {sonderSignal && (
+        <div className='absolute w-32 h-32 right-0 top-0'>
+          {(() => {
+            switch (sonderSignal) {
+              case 'Ja':
+                return <img src='/JA.png' />;
+              case 'Nein':
+                return <img src='/NEIN.png' />;
+              default:
+                break;
+            }
+          })()}
+        </div>
+      )}
       <div className='w-1/2 h-full'>
         <MapContainer
-          center={[destination.coordinates.lat, destination.coordinates.lng]}
+          center={[
+            destination?.coordinates?.lat || 0,
+            destination?.coordinates?.lng || 0,
+          ]}
           zoom={13}
           className='h-full w-full'
         >
           <TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
-          <Marker position={[destination.coordinates.lat, destination.coordinates.lng]}>
+          <Marker
+            position={[
+              destination?.coordinates?.lat || 0,
+              destination?.coordinates?.lng || 0,
+            ]}
+          >
             <Popup>
-              Coordinates: {destination.coordinates.lat}, {destination.coordinates.lng}
+              Coordinates: {destination?.coordinates?.lat},{' '}
+              {destination?.coordinates?.lng}
             </Popup>
           </Marker>
-          <MapUpdater coordinates={coordinates} />
+          <MapUpdater
+            destination={{
+              coordinates: destination.coordinates,
+            }}
+          />
         </MapContainer>
       </div>
       <div className='w-1/2 p-8 flex flex-col justify-center items-center'>
         <h1 className='text-4xl mb-12 font-bold'>{keyword}</h1>
-        <p className='mb-10 font-extralight text-lg'>{description}</p>
+        {description && (
+          <p className='mb-10 font-extralight text-lg'>{description}</p>
+        )}
         <table className='w-full table-auto my-6'>
           <thead>
             <tr>
-              <th className='py-2 text-3xl text-start px-4'>Alarmierte Fahrzeuge</th>
+              <th className='py-2 text-3xl text-start px-4'>
+                Alarmierte Fahrzeuge
+              </th>
             </tr>
           </thead>
           <tbody>
