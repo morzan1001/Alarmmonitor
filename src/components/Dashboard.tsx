@@ -117,10 +117,11 @@ const Dashboard: React.FC = () => {
       )}
       <div className='w-1/2 h-full'>
         {/* Render the map with initial center and zoom */}
+        {/* Default center is Buschdorf */}
         <MapContainer
           center={[
-            destination?.coordinates?.lat || 0,
-            destination?.coordinates?.lng || 0,
+            destination?.coordinates?.lat || 50.7618649,
+            destination?.coordinates?.lng || 7.0495328,
           ]}
           zoom={13}
           className='h-full w-full'
@@ -128,8 +129,8 @@ const Dashboard: React.FC = () => {
           <TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
           <Marker
             position={[
-              destination?.coordinates?.lat || 0,
-              destination?.coordinates?.lng || 0,
+              destination?.coordinates?.lat || 50.7618649,
+              destination?.coordinates?.lng || 7.0495328,
             ]}
           >
             <Popup>
