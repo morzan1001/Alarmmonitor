@@ -17,6 +17,7 @@ L.Icon.Default.mergeOptions({
 
 const WebSocketURL = 'wss://116.203.84.208:8000/ws';
 
+// Interfaces to define the structure of data used in components
 interface MapData {
   coordinates: {
     lat: number;
@@ -32,19 +33,23 @@ interface DashboardData {
   sondersignal: string;
 }
 
+// Component for updating the map view based on destination coordinates
 const MapUpdater: React.FC<{ destination: MapData }> = ({ destination }) => {
-  const map = useMap();
+  const map = useMap(); // Retrieve the map instance
   useEffect(() => {
+    // Update the map view anytime the destination changes
     map.setView(
       [destination?.coordinates?.lng || 0, destination?.coordinates?.lat || 0],
       16
     );
   }, [destination, map]);
 
-  return null;
+  return null; // This component does not render anything
 };
 
+// Main Dashboard component
 const Dashboard: React.FC = () => {
+  // State hooks for managing different data points
   const [destination, setDestination] = useState<MapData>({
     coordinates: {
       lat: 0,
@@ -53,26 +58,26 @@ const Dashboard: React.FC = () => {
   });
   const [keyword, setKeyword] = useState<string>('Alarmstichwort');
   const [description, setDescription] = useState<string>('');
-  const [vehicles, setTableContent] = useState<string[]>([
-    'Fahrzeug 1',
-    'Fahrzeug 2',
-  ]);
+  const [vehicles, setVehicles] = useState<string[]>(['Fahrzeug 1', 'Fahrzeug 2']);
   const [sonderSignal, setSonderSignal] = useState('');
+
+  // Effect for establishing a WebSocket connection and handling messages
   useEffect(() => {
     const ws = new WebSocket(WebSocketURL);
 
     ws.onopen = () => {
-      console.log('WebSocket connected');
+      console.log('WebSocket connected'); // Log connection status
     };
 
     ws.onmessage = (event) => {
       try {
         const data: DashboardData = JSON.parse(event.data);
         console.log('Parsed data:', data);
+        // Update state with incoming data
         setDestination(data.ziel || {});
         setKeyword(data.keyword);
         setDescription(data?.description);
-        setTableContent(data.vehicles);
+        setVehicles(data.vehicles);
         setSonderSignal(data?.sondersignal);
       } catch (error) {
         console.error('Error parsing WebSocket message:', error);
@@ -80,28 +85,30 @@ const Dashboard: React.FC = () => {
     };
 
     ws.onclose = () => {
-      console.log('WebSocket disconnected');
+      console.log('WebSocket disconnected'); // Log disconnection
     };
 
     ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
+      console.error('WebSocket error:', error); // Log errors
     };
 
+    // Cleanup WebSocket connection on component unmount
     return () => {
       ws.close();
     };
-  }, []);
+  }, []); // Empty dependency array means this runs once on mount
 
   return (
     <div className='flex h-screen bg-gray-900 text-white'>
+      {/* Conditionally render the signal image based on the sondersignal state */}
       {sonderSignal && (
         <div className='absolute w-32 h-32 right-0 top-0'>
           {(() => {
             switch (sonderSignal) {
               case 'Ja':
-                return <img src='/JA.png' />;
+                return <img src='/JA.png' alt='SonderSignal Ja' />;
               case 'Nein':
-                return <img src='/NEIN.png' />;
+                return <img src='/NEIN.png' alt='SonderSignal Nein' />;
               default:
                 break;
             }
@@ -109,6 +116,7 @@ const Dashboard: React.FC = () => {
         </div>
       )}
       <div className='w-1/2 h-full'>
+        {/* Render the map with initial center and zoom */}
         <MapContainer
           center={[
             destination?.coordinates?.lat || 0,
@@ -125,22 +133,20 @@ const Dashboard: React.FC = () => {
             ]}
           >
             <Popup>
-              Coordinates: {destination?.coordinates?.lat},{' '}
-              {destination?.coordinates?.lng}
+              Coordinates: {destination?.coordinates?.lat}, {destination?.coordinates?.lng}
             </Popup>
           </Marker>
-          <MapUpdater
-            destination={{
-              coordinates: destination.coordinates,
-            }}
-          />
+          {/* Component to update map view when destination changes */}
+          <MapUpdater destination={{ coordinates: destination.coordinates }} />
         </MapContainer>
       </div>
       <div className='w-1/2 p-8 flex flex-col justify-center items-center'>
+        {/* Display alarm keyword and description */}
         <h1 className='text-4xl mb-12 font-bold'>{keyword}</h1>
         {description && (
           <p className='mb-10 font-extralight text-lg'>{description}</p>
         )}
+        {/* Table listing vehicles */}
         <table className='w-full table-auto my-6'>
           <thead>
             <tr>
@@ -150,8 +156,8 @@ const Dashboard: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {vehicles.map((item, index) => (
-              <tr key={index}>
+            {vehicles.map((item) => (
+              <tr key={item}>
                 <td>
                   <div className='px-4 py-2'>{item}</div>
                 </td>
