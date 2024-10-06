@@ -15,7 +15,7 @@ L.Icon.Default.mergeOptions({
     'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-const WebSocketURL = 'wss://116.203.84.208:8000/ws';
+const WebSocketURL = 'wss://apager.ff-buschdorf.de/?token=49wocbSN9YBsAEDrHA5v7cB8Y9kwdahysVcdW6cTFe4uRwVFc6UpVVUTkLJYnvXL';
 
 // Interfaces to define the structure of data used in components
 interface MapData {
