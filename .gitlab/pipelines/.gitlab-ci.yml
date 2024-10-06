@@ -16,7 +16,6 @@ code_quality:
     reports:
       codequality: reports/gl-codequality.json
 
-
 sonarqube-check:
   image:
     name: sonarsource/sonar-scanner-cli:latest
