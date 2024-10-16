@@ -39,7 +39,7 @@ const MapUpdater: React.FC<{ destination: MapData }> = ({ destination }) => {
   useEffect(() => {
     // Update the map view anytime the destination changes
     map.setView(
-      [destination?.coordinates?.lng || 0, destination?.coordinates?.lat || 0],
+      [destination?.coordinates?.lng || 50.7618649, destination?.coordinates?.lat || 7.0495328],
       16
     );
   }, [destination, map]);
