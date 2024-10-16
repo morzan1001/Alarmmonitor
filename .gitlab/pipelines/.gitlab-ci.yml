@@ -32,6 +32,7 @@ sonarqube-check:
       - .sonar/cache
   script:
     - sonar-scanner
+      -Dsonar.host.url=${SONAR_HOST_URL}
       -Dsonar.token=${SONAR_TOKEN}
       -Dsonar.projectKey=${SONAR_PROJECT_KEY}
       -Dsonar.projectName="${CI_PROJECT_TITLE}"
