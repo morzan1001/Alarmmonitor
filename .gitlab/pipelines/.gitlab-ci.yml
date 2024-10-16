@@ -17,6 +17,8 @@ code_quality:
       codequality: reports/gl-codequality.json
 
 sonarqube-check:
+  only:
+    - main
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
@@ -32,13 +34,14 @@ sonarqube-check:
       - .sonar/cache
   script:
     - sonar-scanner
-      -Dsonar.host.url=${SONAR_HOST_URL}
       -Dsonar.token=${SONAR_TOKEN}
       -Dsonar.projectKey=${SONAR_PROJECT_KEY}
       -Dsonar.projectName="${CI_PROJECT_TITLE}"
       -Dsonar.sources=src
 
 sonarqube-vulnerability-report:
+  only:
+    - main
   image: curlimages/curl:latest
   stage: report
   script:
@@ -52,6 +55,8 @@ sonarqube-vulnerability-report:
     - sonarqube-check
 
 build-container:
+  only:
+    - main
   stage: build
   parallel:
     matrix:
@@ -74,6 +79,8 @@ build-container:
       --destination "${HARBOR_HOST}/${HARBOR_PROJECT}/${CI_PROJECT_NAME}:${ARCH}"
 
 merge-manifests:
+  only:
+    - main
   stage: build
   needs:
     - build-container
@@ -93,6 +100,8 @@ merge-manifests:
       --target ${HARBOR_HOST}/${HARBOR_PROJECT}/${CI_PROJECT_NAME}:latest
 
 publish-helm-chart:
+  only:
+    - main
   stage: build
   image:
     name: alpine/helm:latest
@@ -105,6 +114,8 @@ publish-helm-chart:
     - helm push $CI_PROJECT_DIR/alarmmonitor-0.1.0.tgz oci://harbor.runforest.run/alarmmonitor
 
 deploy-helm-chart:
+  only:
+    - main
   stage: deploy
   image:
     name: dtzar/helm-kubectl
