@@ -18,7 +18,7 @@ code_quality:
 
 sonarqube-check:
   rules:
-    - if: '$CI_COMMIT_REF_NAME == "main"'
+    - if: $CI_COMMIT_BRANCH == "main"
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
@@ -41,7 +41,7 @@ sonarqube-check:
 
 sonarqube-vulnerability-report:
   rules:
-    - if: '$CI_COMMIT_REF_NAME == "main"'
+    - if: $CI_COMMIT_BRANCH == "main"
   image: curlimages/curl:latest
   stage: report
   script:
@@ -55,8 +55,6 @@ sonarqube-vulnerability-report:
     - sonarqube-check
 
 build-container:
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == "main"'
   stage: build
   parallel:
     matrix:
@@ -79,8 +77,6 @@ build-container:
       --destination "${HARBOR_HOST}/${HARBOR_PROJECT}/${CI_PROJECT_NAME}:${ARCH}"
 
 merge-manifests:
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == "main"'
   stage: build
   needs:
     - build-container
@@ -101,7 +97,7 @@ merge-manifests:
 
 publish-helm-chart:
   rules:
-    - if: '$CI_COMMIT_REF_NAME == "main"'
+    - if: $CI_COMMIT_BRANCH == "main"
   stage: build
   image:
     name: alpine/helm:latest
@@ -115,7 +111,7 @@ publish-helm-chart:
 
 deploy-helm-chart:
   rules:
-    - if: '$CI_COMMIT_REF_NAME == "main"'
+    - if: $CI_COMMIT_BRANCH == "main"
   stage: deploy
   image:
     name: dtzar/helm-kubectl
