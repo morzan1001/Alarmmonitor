@@ -167,24 +167,16 @@ const Dashboard: React.FC = () => {
         {description && (
           <p className='mb-10 font-extralight text-lg'>{description}</p>
         )}
-        <table className='w-full table-auto my-6'>
-          <thead>
-            <tr>
-              <th className='py-2 text-3xl text-start px-4'>
-                Alarmierte Fahrzeuge
-              </th>
-            </tr>
-          </thead>
-          <tbody>
+        <div className='w-full my-6'>
+          <h2 className='text-3xl mb-4 text-center'>Alarmierte Fahrzeuge</h2>
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-auto'>
             {vehicles.map((item) => (
-              <tr key={item}>
-                <td>
-                  <div className='px-4 py-2'>{item}</div>
-                </td>
-              </tr>
+              <div key={item} className='bg-gray-800 rounded p-3'>
+                {item}
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
     </div>
   );
