@@ -62,6 +62,21 @@ const Dashboard: React.FC = () => {
   const [sonderSignal, setSonderSignal] = useState('');
 
   const [isConnected, setIsConnected] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  // Effect for showing an error message after 1 seconds on initial load if not connected
+  useEffect(() => {
+    if (isInitialLoad) {
+      const timer = setTimeout(() => {
+        setShowError(!isConnected);
+        setIsInitialLoad(false);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setShowError(!isConnected);
+    }
+  }, [isConnected, isInitialLoad]);
 
   // Effect for establishing a WebSocket connection and handling messages
   useEffect(() => {
@@ -115,7 +130,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className='flex h-screen bg-gray-900 text-white relative'>
       {/* Overlay background */}
-      {!isConnected && (
+      {showError && (
         <div className='absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10'>
           <div className='bg-red-600 text-white p-4 rounded-lg shadow-lg'>
             Keine Verbindung zum Server - Verbindungsversuch läuft...
