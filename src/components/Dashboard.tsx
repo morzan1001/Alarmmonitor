@@ -76,30 +76,31 @@ const Dashboard: React.FC = () => {
         setIsConnected(true);
       };
 
-    ws.onmessage = (event) => {
-      try {
-        const data: DashboardData = JSON.parse(event.data);
-        console.log('Parsed data:', data);
-        // Update state with incoming data
-        setDestination(data.ziel || {});
-        setKeyword(data.keyword);
-        setDescription(data?.description);
-        setVehicles(data.vehicles);
-        setSonderSignal(data?.sondersignal);
-      } catch (error) {
-        console.error('Error parsing WebSocket message:', error);
-      }
-    };
+      ws.onmessage = (event) => {
+        try {
+          const data: DashboardData = JSON.parse(event.data);
+          console.log('Parsed data:', data);
+          // Update state with incoming data
+          setDestination(data.ziel || {});
+          setKeyword(data.keyword);
+          setDescription(data?.description);
+          setVehicles(data.vehicles);
+          setSonderSignal(data?.sondersignal);
+        } catch (error) {
+          console.error('Error parsing WebSocket message:', error);
+        }
+      };
 
-    ws.onclose = () => {
-      console.log('WebSocket disconnected'); // Log disconnection
-      setIsConnected(false); 
-      reconnectTimeout = setTimeout(connectWebSocket, 5000);
-    };
+      ws.onclose = () => {
+        console.log('WebSocket disconnected'); // Log disconnection
+        setIsConnected(false); 
+        reconnectTimeout = setTimeout(connectWebSocket, 5000);
+      };
 
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error); // Log errors
-      ws.close();
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error); // Log errors
+        ws.close();
+      };
     };
 
     connectWebSocket();
@@ -109,19 +110,21 @@ const Dashboard: React.FC = () => {
       if (ws) ws.close();
       if (reconnectTimeout) clearTimeout(reconnectTimeout);
     };
-  }, []); // Empty dependency array means this runs once on mount
+  }, []); // Corrected syntax with closed parenthesis
 
   return (
-    <div className='flex h-screen bg-gray-900 text-white'>
-      {/* Connection status indicator */}
+    <div className='flex h-screen bg-gray-900 text-white relative'>
+      {/* Overlay background */}
       {!isConnected && (
-        <div className='absolute top-0 left-0 right-0 bg-red-600 text-white p-2 text-center'>
-          Keine Verbindung zum Server - Verbindungsversuch läuft...
+        <div className='absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10'>
+          <div className='bg-red-600 text-white p-4 rounded-lg shadow-lg'>
+            Keine Verbindung zum Server - Verbindungsversuch läuft...
+          </div>
         </div>
       )}
       {/* Conditionally render the signal image based on the sondersignal state */}
       {sonderSignal && (
-        <div className='absolute w-32 h-32 right-0 top-0'>
+        <div className='absolute w-32 h-32 right-0 top-0 z-20'>
           {(() => {
             switch (sonderSignal) {
               case 'Ja':
@@ -136,7 +139,6 @@ const Dashboard: React.FC = () => {
       )}
       <div className='w-1/2 h-full'>
         {/* Render the map with initial center and zoom */}
-        {/* Default center is Buschdorf */}
         <MapContainer
           center={[
             destination?.coordinates?.lat || 50.7618649,
@@ -144,6 +146,7 @@ const Dashboard: React.FC = () => {
           ]}
           zoom={13}
           className='h-full w-full'
+          style={{ zIndex: 1 }} // Ensure map is behind the popup
         >
           <TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
           <Marker
@@ -156,17 +159,14 @@ const Dashboard: React.FC = () => {
               Coordinates: {destination?.coordinates?.lat}, {destination?.coordinates?.lng}
             </Popup>
           </Marker>
-          {/* Component to update map view when destination changes */}
           <MapUpdater destination={{ coordinates: destination.coordinates }} />
         </MapContainer>
       </div>
       <div className='w-1/2 p-8 flex flex-col justify-center items-center'>
-        {/* Display alarm keyword and description */}
         <h1 className='text-4xl mb-12 font-bold'>{keyword}</h1>
         {description && (
           <p className='mb-10 font-extralight text-lg'>{description}</p>
         )}
-        {/* Table listing vehicles */}
         <table className='w-full table-auto my-6'>
           <thead>
             <tr>
