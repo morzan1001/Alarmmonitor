@@ -61,13 +61,20 @@ const Dashboard: React.FC = () => {
   const [vehicles, setVehicles] = useState<string[]>(['Fahrzeug 1', 'Fahrzeug 2']);
   const [sonderSignal, setSonderSignal] = useState('');
 
+  const [isConnected, setIsConnected] = useState(false);
+
   // Effect for establishing a WebSocket connection and handling messages
   useEffect(() => {
-    const ws = new WebSocket(WebSocketURL);
+    let ws: WebSocket;
+    let reconnectTimeout: ReturnType<typeof setTimeout>;
 
-    ws.onopen = () => {
-      console.log('WebSocket connected'); // Log connection status
-    };
+    const connectWebSocket = () => {
+      ws = new WebSocket(WebSocketURL);
+
+      ws.onopen = () => {
+        console.log('WebSocket connected'); // Log connection status
+        setIsConnected(true);
+      };
 
     ws.onmessage = (event) => {
       try {
@@ -86,20 +93,32 @@ const Dashboard: React.FC = () => {
 
     ws.onclose = () => {
       console.log('WebSocket disconnected'); // Log disconnection
+      setIsConnected(false); 
+      reconnectTimeout = setTimeout(connectWebSocket, 5000);
     };
 
     ws.onerror = (error) => {
       console.error('WebSocket error:', error); // Log errors
+      ws.close();
     };
+
+    connectWebSocket();
 
     // Cleanup WebSocket connection on component unmount
     return () => {
-      ws.close();
+      if (ws) ws.close();
+      if (reconnectTimeout) clearTimeout(reconnectTimeout);
     };
   }, []); // Empty dependency array means this runs once on mount
 
   return (
     <div className='flex h-screen bg-gray-900 text-white'>
+      {/* Connection status indicator */}
+      {!isConnected && (
+        <div className='absolute top-0 left-0 right-0 bg-red-600 text-white p-2 text-center'>
+          Keine Verbindung zum Server - Verbindungsversuch läuft...
+        </div>
+      )}
       {/* Conditionally render the signal image based on the sondersignal state */}
       {sonderSignal && (
         <div className='absolute w-32 h-32 right-0 top-0'>
