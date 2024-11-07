@@ -6,7 +6,7 @@ stages:
 
 code_quality:
   stage: test
-  image: "node:alpine"
+  image: "harbor.runforest.run/library/node:alpine"
   before_script:
     - mkdir -p reports
     - npm install eslint eslint-plugin-react eslint-formatter-gitlab
@@ -20,7 +20,7 @@ sonarqube-check:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
   image:
-    name: sonarsource/sonar-scanner-cli:latest
+    name: harbor.runforest.run/library/sonar-scanner-cli:latest
     entrypoint: [""]
   stage: report
   allow_failure: true
@@ -42,7 +42,7 @@ sonarqube-check:
 sonarqube-vulnerability-report:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
-  image: curlimages/curl:latest
+  image: harbor.runforest.run/library/curl:latest
   stage: report
   script:
     - 'curl -u "${SONAR_TOKEN}:" "${SONAR_HOST_URL}/api/issues/gitlab_sast_export?projectKey=${SONAR_PROJECT_KEY}&branch=${CI_COMMIT_BRANCH}&pullRequest=${CI_MERGE_REQUEST_IID}" -o gl-sast-sonar-report.json'
@@ -83,7 +83,7 @@ merge-manifests:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
   image:
-    name: mplatform/manifest-tool:alpine
+    name: harbor.runforest.run/library/manifest-tool:alpine
     entrypoint: [""]
   script:
     - >-
@@ -100,7 +100,7 @@ publish-helm-chart:
     - if: $CI_COMMIT_BRANCH == "main"
   stage: build
   image:
-    name: alpine/helm:latest
+    name: harbor.runforest.run/library/helm:latest
     entrypoint: ['']
   before_script:
     - chmod 600 /builds/morzan1001/alarmmonitor.tmp/KUBECONFIG
@@ -114,7 +114,7 @@ deploy-helm-chart:
     - if: $CI_COMMIT_BRANCH == "main"
   stage: deploy
   image:
-    name: dtzar/helm-kubectl
+    name: harbor.runforest.run/library/helm-kubectl
     entrypoint: ['']
   before_script:
     - chmod 600 /builds/morzan1001/alarmmonitor.tmp/KUBECONFIG
