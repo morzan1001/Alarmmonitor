@@ -1,4 +1,4 @@
-FROM node:22-slim AS base
+FROM harbor.runforest.run/library/node:22-slim AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -10,7 +10,7 @@ FROM base AS build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run build
 
-FROM nginx:alpine
+FROM harbor.runforest.run/library/nginx:alpine
 LABEL authors="Matthias Duve"
 
 COPY --from=build /app/dist /usr/share/nginx/html
