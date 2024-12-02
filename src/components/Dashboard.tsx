@@ -142,12 +142,12 @@ const Dashboard: React.FC = () => {
         <div className='absolute w-32 h-32 right-0 top-0 z-20'>
           {(() => {
             switch (sonderSignal) {
-              case 'Ja':
-                return <img src='/JA.png' alt='SonderSignal Ja' />;
-              case 'Nein':
-                return <img src='/NEIN.png' alt='SonderSignal Nein' />;
-              default:
-                break;
+            case 'Ja':
+              return <img src='/JA.png' alt='SonderSignal Ja' />;
+            case 'Nein':
+              return <img src='/NEIN.png' alt='SonderSignal Nein' />;
+            default:
+              break;
             }
           })()}
         </div>
