@@ -201,23 +201,23 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
         <div className='flex-1 flex flex-col justify-center items-center'>
-        <h1 className='text-4xl mb-12 font-bold'>{keyword}</h1>
-        {description && (
+          <h1 className='text-4xl mb-12 font-bold'>{keyword}</h1>
+          {description && (
           <p className='mb-10 font-extralight text-lg'>{description}</p>
-        )}
-        <div className='w-full my-6'>
-          <h2 className='text-3xl mb-4 text-center'>Alarmierte Fahrzeuge</h2>
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-auto'>
-            {vehicles.map((item) => (
-              <div key={item} className='bg-gray-800 rounded p-3'>
-                {item}
-              </div>
-            ))}
+          )}
+          <div className='w-full my-6'>
+            <h2 className='text-3xl mb-4 text-center'>Alarmierte Fahrzeuge</h2>
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-auto'>
+              {vehicles.map((item) => (
+                <div key={item} className='bg-gray-800 rounded p-3'>
+                  {item}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   );
 };
 
