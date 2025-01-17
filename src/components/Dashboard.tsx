@@ -15,8 +15,7 @@ L.Icon.Default.mergeOptions({
     'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-const WebSocketURL = 'wss://apager.ff-buschdorf.de/?token=49wocbSN9YBsAEDrHA5v7cB8Y9kwdahysVcdW6cTFe4uRwVFc6UpVVUTkLJYnvXL';
-
+const WebSocketURL = import.meta.env.WEBSOCKET_URL ?? 'wss://example.com/ws'; // Get the WebSocket URL from environment variables
 // Interfaces to define the structure of data used in components
 interface MapData {
   coordinates: {

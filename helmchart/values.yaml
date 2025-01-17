@@ -10,6 +10,9 @@ imagePullSecrets:
 nameOverride: ""
 fullnameOverride: ""
 
+websocket: 
+  url: "wss://example.com/ws"
+
 serviceAccount:
   create: true
   automount: true
