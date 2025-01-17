@@ -203,7 +203,7 @@ const Dashboard: React.FC = () => {
         <div className='flex-1 flex flex-col justify-center items-center'>
           <h1 className='text-4xl mb-12 font-bold'>{keyword}</h1>
           {description && (
-          <p className='mb-10 font-extralight text-lg'>{description}</p>
+            <p className='mb-10 font-extralight text-lg'>{description}</p>
           )}
           <div className='w-full my-6'>
             <h2 className='text-3xl mb-4 text-center'>Alarmierte Fahrzeuge</h2>

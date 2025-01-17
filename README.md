@@ -1,9 +1,9 @@
 # Alarmmonitor
 
-Der Alarmmonitor ist eine Art Dashboard, welches Alarmdaten übersichtlich anzeigen soll. Dabei setzt die Anwendung auf React und empfängt Daten über eine Webhook.
+The alarm monitor is a type of dashboard that displays alarm data clearly. The application relies on React and receives data via a webhook.
 
 ![](assets/ScreenshotAlarmmonitor.png)
 
-Um die Anwendung zu bauen kann [pnpm](https://pnpm.io/) verwendet werden. Über den Befehl `pnpm run build` wird der Code über [vite](https://vitejs.dev/) in eine Javascript-Datei gepackt und ist über einen Webserver auslieferbar. 
+To build the application, [pnpm](https://pnpm.io/) can be used. Using the command `pnpm run build`, the code is packed into a Javascript file via [vite](https://vitejs.dev/) and can be delivered via a web server.
 
-Die Pipeline in diesem Repository baut das Projekt und deployed es als Container im Kubernetes-Cluster.
+The pipeline in this repository builds the project and deploys it as a container in the Kubernetes cluster.
