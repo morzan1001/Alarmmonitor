@@ -1,6 +1,6 @@
 apiVersion: v2
 name: alarmmonitor
-description: Alarmmonitor to show alarm data from Thilos backend.
+description: Alarmmonitor to show alarm data from a custom backend.
 type: application
 version: 0.1.0
 appVersion: "latest"
