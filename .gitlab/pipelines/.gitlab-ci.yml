@@ -74,6 +74,7 @@ build-container:
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --build-arg WEBSOCKET_URL=${WEBSOCKET_URL}
       --destination "${HARBOR_HOST}/${HARBOR_PROJECT}/${CI_PROJECT_NAME}:${ARCH}"
 
 merge-manifests:
@@ -121,4 +122,4 @@ deploy-helm-chart:
   script:
     - kubectl config use-context morzan1001/alarmmonitor:alarmmonitor-agent
     - echo -n ${HARBOR_PASSWORD} | helm registry login --username=${HARBOR_USERNAME} --password-stdin ${HARBOR_HOST}
-    - helm upgrade --install alarmmonitor oci://harbor.runforest.run/alarmmonitor/alarmmonitor -n alarmmonitor --set websocket.url=${WEBSOCKET_URL}
+    - helm upgrade --install alarmmonitor oci://harbor.runforest.run/alarmmonitor/alarmmonitor -n alarmmonitor

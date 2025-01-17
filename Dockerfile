@@ -7,6 +7,10 @@ COPY . /app
 WORKDIR /app
 
 FROM base AS build
+
+ARG WEBSOCKET_URL
+ENV WEBSOCKET_URL=$WEBSOCKET_URL
+
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run build
 
