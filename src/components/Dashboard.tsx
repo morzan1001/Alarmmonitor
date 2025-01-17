@@ -60,6 +60,8 @@ const Dashboard: React.FC = () => {
   const [description, setDescription] = useState<string>('');
   const [vehicles, setVehicles] = useState<string[]>(['Fahrzeug 1', 'Fahrzeug 2']);
   const [sonderSignal, setSonderSignal] = useState('');
+  const [alarmTime, setAlarmTime] = useState<string>('Unbekannt');
+  const [currentTime, setCurrentTime] = useState<string>('');
 
   const [isConnected, setIsConnected] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -101,6 +103,7 @@ const Dashboard: React.FC = () => {
           setDescription(data?.description);
           setVehicles(data.vehicles);
           setSonderSignal(data?.sondersignal);
+          setAlarmTime(new Date().toLocaleTimeString()); // Set the alarm time
         } catch (error) {
           console.error('Error parsing WebSocket message:', error);
         }
@@ -126,6 +129,14 @@ const Dashboard: React.FC = () => {
       if (reconnectTimeout) clearTimeout(reconnectTimeout);
     };
   }, []); // Corrected syntax with closed parenthesis
+
+  // Effect for updating the current time every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date().toLocaleTimeString());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <div className='flex h-screen bg-gray-900 text-white relative'>
@@ -177,7 +188,19 @@ const Dashboard: React.FC = () => {
           <MapUpdater destination={{ coordinates: destination.coordinates }} />
         </MapContainer>
       </div>
-      <div className='w-1/2 p-8 flex flex-col justify-center items-center'>
+      <div className='w-1/2 p-8 flex flex-col'>
+        {/* Time displays container */}
+        <div className='flex w-full justify-around mb-16 mt-8'> 
+          <div className='bg-gray-800 p-4 rounded-lg shadow-lg flex flex-col items-center w-2/5'>
+            <p className='text-5xl font-bold mb-2'>{alarmTime}</p>
+            <h2 className='text-sm font-semibold'>Alarmeingang</h2>
+          </div>
+          <div className='bg-gray-800 p-4 rounded-lg shadow-lg flex flex-col items-center w-2/5'>
+            <p className='text-5xl font-bold mb-2'>{currentTime}</p>
+            <h2 className='text-sm font-semibold'>Uhrzeit</h2>
+          </div>
+        </div>
+        <div className='flex-1 flex flex-col justify-center items-center'>
         <h1 className='text-4xl mb-12 font-bold'>{keyword}</h1>
         {description && (
           <p className='mb-10 font-extralight text-lg'>{description}</p>
@@ -194,6 +217,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
     </div>
+  </div>
   );
 };
 
