@@ -208,7 +208,7 @@ const Dashboard: React.FC = () => {
             <h2 className='text-3xl mb-4 text-center'>Alarmierte Fahrzeuge</h2>
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-auto'>
               {vehicles.map((item) => (
-                <div key={item} className='bg-gray-800 rounded p-3'>
+                <div key={item} className='bg-gray-800 rounded-sm p-3'>
                   {item}
                 </div>
               ))}
