@@ -1,6 +1,6 @@
 # Alarmmonitor
 
-The alarm monitor is a type of dashboard that displays alarm data clearly. The application relies on React and receives data via a webhook.
+The alarm monitor is a type of dashboard that displays alarm data clearly. The application relies on React and receives data via a websocket connection.
 
 ![](assets/ScreenshotAlarmmonitor.png)
 
