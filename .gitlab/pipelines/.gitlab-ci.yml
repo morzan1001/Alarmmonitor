@@ -23,11 +23,14 @@ unit-tests:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - node_modules/
+      - .pnpm-store/
   before_script:
-    - npm ci --prefer-offline
+    - npm install -g pnpm
+    - pnpm config set store-dir .pnpm-store
+    - pnpm install --frozen-lockfile
   script:
-    - npm run test:unit
-    - npm run test:unit -- --coverage
+    - pnpm run test:unit
+    - pnpm run test:unit -- --coverage
   artifacts:
     when: always
     paths:
@@ -39,6 +42,7 @@ unit-tests:
       junit: coverage/junit.xml
     expire_in: 1 week
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+
 
 sonarqube-check:
   rules:
