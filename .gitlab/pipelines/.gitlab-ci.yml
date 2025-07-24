@@ -62,7 +62,7 @@ sonarqube-check:
     paths:
       - .sonar/cache
   script:
-    - sonar-scanner
+   - sonar-scanner
       -Dsonar.token=${SONAR_TOKEN}
       -Dsonar.projectKey=${SONAR_PROJECT_KEY}
       -Dsonar.projectName="${CI_PROJECT_TITLE}"
@@ -70,8 +70,7 @@ sonarqube-check:
       -Dsonar.tests=src
       -Dsonar.test.inclusions="**/*.test.tsx,**/*.test.ts"
       -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-      -Dsonar.testExecutionReportPaths=coverage/junit.xml
-      -Dsonar.junit.reportPaths=coverage/junit.xml
+      -Dsonar.testExecutionReportPaths=coverage/sonar-report.xml
       -Dsonar.coverage.exclusions="**/*.test.tsx,**/*.test.ts,**/mocks/**,**/test/**"
       -Dsonar.typescript.tsconfigPath=tsconfig.json
       -Dsonar.sourceEncoding=UTF-8

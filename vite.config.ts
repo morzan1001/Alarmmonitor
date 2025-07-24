@@ -19,10 +19,11 @@ export default defineConfig({
         '**/mocks/**',
       ],
     },
-    reporters: ['default', 'junit', 'json'],
+    reporters: ['default', 'junit', 'json', 'vitest-sonar-reporter'],
     outputFile: {
       junit: './coverage/junit.xml',
       json: './coverage/test-report.json',
+      'vitest-sonar-reporter': './coverage/sonar-report.xml',
     },
   },
 })
