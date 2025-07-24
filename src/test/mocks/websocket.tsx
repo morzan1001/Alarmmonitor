@@ -9,10 +9,10 @@ export class MockWebSocket {
   onerror: ((event: Event) => void) | null = null;
   autoConnect: boolean = true;
 
-  static CONNECTING = 0;
-  static OPEN = 1;
-  static CLOSING = 2;
-  static CLOSED = 3;
+  static readonly CONNECTING = 0;
+  static readonly OPEN = 1;
+  static readonly CLOSING = 2;
+  static readonly CLOSED = 3;
 
   constructor(url: string, autoConnect: boolean = true) {
     this.url = url;
