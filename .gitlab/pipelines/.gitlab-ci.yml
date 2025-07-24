@@ -29,8 +29,8 @@ unit-tests:
     - pnpm config set store-dir .pnpm-store
     - pnpm install --frozen-lockfile
   script:
-    - pnpm run test:unit
-    - pnpm run test:unit -- --coverage
+    - pnpm run test:coverage
+
   artifacts:
     when: always
     paths:
@@ -70,7 +70,8 @@ sonarqube-check:
       -Dsonar.tests=src
       -Dsonar.test.inclusions="**/*.test.tsx,**/*.test.ts"
       -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-      -Dsonar.testExecutionReportPaths=coverage/test-report.xml
+      -Dsonar.testExecutionReportPaths=coverage/junit.xml
+      -Dsonar.junit.reportPaths=coverage/junit.xml
       -Dsonar.coverage.exclusions="**/*.test.tsx,**/*.test.ts,**/mocks/**,**/test/**"
       -Dsonar.typescript.tsconfigPath=tsconfig.json
       -Dsonar.sourceEncoding=UTF-8
