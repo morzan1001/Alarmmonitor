@@ -16,6 +16,34 @@ code_quality:
     reports:
       codequality: reports/gl-codequality.json
 
+unit-tests:
+  stage: test
+  image: "harbor.runforest.run/library/node:alpine"
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - .pnpm-store/
+  before_script:
+    - npm install -g pnpm
+    - pnpm config set store-dir .pnpm-store
+    - pnpm install --frozen-lockfile
+  script:
+    - pnpm run test:coverage
+
+  artifacts:
+    when: always
+    paths:
+      - coverage/
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+      junit: coverage/junit.xml
+    expire_in: 1 week
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+
+
 sonarqube-check:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
@@ -23,6 +51,7 @@ sonarqube-check:
     name: harbor.runforest.run/library/sonar-scanner-cli:latest
     entrypoint: [""]
   stage: report
+  needs: ["unit-tests"]
   allow_failure: true
   variables:
     KUBERNETES_NODE_SELECTOR_ARCH: 'kubernetes.io/arch=amd64'
@@ -38,6 +67,16 @@ sonarqube-check:
       -Dsonar.projectKey=${SONAR_PROJECT_KEY}
       -Dsonar.projectName="${CI_PROJECT_TITLE}"
       -Dsonar.sources=src
+      -Dsonar.tests=src
+      -Dsonar.test.inclusions="**/*.test.tsx,**/*.test.ts"
+      -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+      -Dsonar.testExecutionReportPaths=coverage/junit.xml
+      -Dsonar.junit.reportPaths=coverage/junit.xml
+      -Dsonar.coverage.exclusions="**/*.test.tsx,**/*.test.ts,**/mocks/**,**/test/**"
+      -Dsonar.typescript.tsconfigPath=tsconfig.json
+      -Dsonar.sourceEncoding=UTF-8
+      -Dsonar.javascript.file.suffixes=.js,.jsx,.ts,.tsx
+      -Dsonar.javascript.node.maxspace=4096
 
 sonarqube-vulnerability-report:
   rules:

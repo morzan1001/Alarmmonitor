@@ -38,7 +38,7 @@ const MapUpdater: React.FC<{ destination: MapData }> = ({ destination }) => {
   useEffect(() => {
     // Update the map view anytime the destination changes
     map.setView(
-      [destination?.coordinates?.lat || 50.7618649, destination?.coordinates?.lng || 7.0495328],
+      [destination?.coordinates?.lat ?? 50.7618649, destination?.coordinates?.lng ?? 7.0495328],
       16
     );
   }, [destination, map]);
@@ -97,7 +97,7 @@ const Dashboard: React.FC = () => {
           const data: DashboardData = JSON.parse(event.data);
           console.log('Parsed data:', data);
           // Update state with incoming data
-          setDestination(data.ziel || {});
+          setDestination(data.ziel ?? {});
           setKeyword(data.keyword);
           setDescription(data?.description);
           setVehicles(data.vehicles);
@@ -166,8 +166,8 @@ const Dashboard: React.FC = () => {
         {/* Render the map with initial center and zoom */}
         <MapContainer
           center={[
-            destination?.coordinates?.lat || 50.7618649,
-            destination?.coordinates?.lng || 7.0495328,
+            destination?.coordinates?.lat ?? 50.7618649,
+            destination?.coordinates?.lng ?? 7.0495328,
           ]}
           zoom={13}
           className='h-full w-full'
@@ -176,8 +176,8 @@ const Dashboard: React.FC = () => {
           <TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
           <Marker
             position={[
-              destination?.coordinates?.lat || 50.7618649,
-              destination?.coordinates?.lng || 7.0495328,
+              destination?.coordinates?.lat ?? 50.7618649,
+              destination?.coordinates?.lng ?? 7.0495328,
             ]}
           >
             <Popup>
