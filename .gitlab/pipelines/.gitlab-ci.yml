@@ -75,7 +75,8 @@ sonarqube-check:
       -Dsonar.coverage.exclusions="**/*.test.tsx,**/*.test.ts,**/mocks/**,**/test/**"
       -Dsonar.typescript.tsconfigPath=tsconfig.json
       -Dsonar.sourceEncoding=UTF-8
-      -Dsonar.javascript.file.suffixes=.js,.jsx,.ts,.tsx
+      -Dsonar.lang.patterns.js="**/*.js,**/*.jsx"
+      -Dsonar.lang.patterns.ts="**/*.ts,**/*.tsx"
       -Dsonar.javascript.node.maxspace=4096
 
 sonarqube-vulnerability-report:
