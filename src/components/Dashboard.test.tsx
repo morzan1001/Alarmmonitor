@@ -59,7 +59,7 @@ describe('Dashboard', () => {
     // Now the error message should appear
     expect(screen.getByText('Keine Verbindung zum Server - Verbindungsversuch läuft...')).toBeInTheDocument();
   });
-  
+
   it('updates the time every second', async () => {
     const mockDate = new Date('2024-01-01T12:00:00');
     vi.setSystemTime(mockDate);
@@ -77,6 +77,7 @@ describe('Dashboard', () => {
     
     // Initial time should be empty or show current time
     expect(timeElement).toBeInTheDocument();
+    const initialTime = timeElement?.textContent;
     
     // Advance time by 1 second
     vi.setSystemTime(new Date('2024-01-01T12:00:01'));
@@ -85,8 +86,10 @@ describe('Dashboard', () => {
       vi.advanceTimersByTime(1000);
     });
     
-    // Time should update
-    expect(timeElement?.textContent).toBe('12:00:01');
+    // Time should have changed and contain the expected time
+    expect(timeElement?.textContent).not.toBe(initialTime);
+    // Accept both 24-hour format (12:00:01) and 12-hour format (12:00:01 PM)
+    expect(timeElement?.textContent).toMatch(/12:00:01(\s*(PM|AM))?/);
   });
 
   it('processes incoming WebSocket messages', async () => {
