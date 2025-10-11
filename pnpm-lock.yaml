@@ -38,7 +38,7 @@ importers:
         version: 14.6.1(@testing-library/dom@10.4.0)
       '@types/leaflet':
         specifier: ^1.9.20
-        version: 1.9.20
+        version: 1.9.21
       '@types/react':
         specifier: ^19.1.8
         version: 19.2.2
@@ -788,8 +788,8 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/leaflet@1.9.20':
-    resolution: {integrity: sha512-rooalPMlk61LCaLOvBF2VIf9M47HgMQqi5xQ9QRi7c8PkdIe0WrIi5IxXUXQjAdL0c+vcQ01mYWbthzmp9GHWw==}
+  '@types/leaflet@1.9.21':
+    resolution: {integrity: sha512-TbAd9DaPGSnzp6QvtYngntMZgcRk+igFELwR2N99XZn7RXUdKgsXMR+28bUO0rPsWp8MIu/f47luLIQuSLYv/w==}
 
   '@types/react-dom@19.2.1':
     resolution: {integrity: sha512-/EEvYBdT3BflCWvTMO7YkYBHVE9Ci6XdqZciZANQgKpaiDRGOLIlRo91jbTNRQjgPFWVaRxcYc0luVNFitz57A==}
@@ -2472,7 +2472,7 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/leaflet@1.9.20':
+  '@types/leaflet@1.9.21':
     dependencies:
       '@types/geojson': 7946.0.16
 
