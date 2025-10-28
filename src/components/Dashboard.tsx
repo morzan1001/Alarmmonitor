@@ -63,21 +63,19 @@ const Dashboard: React.FC = () => {
   const [currentTime, setCurrentTime] = useState<string>('');
 
   const [isConnected, setIsConnected] = useState(false);
-  const [showError, setShowError] = useState(false);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [hasInitialDelayElapsed, setHasInitialDelayElapsed] = useState(false);
 
-  // Effect for showing an error message after 1 seconds on initial load if not connected
+  // Effect for unlocking the error overlay after the initial grace period
   useEffect(() => {
-    if (isInitialLoad) {
-      const timer = setTimeout(() => {
-        setShowError(!isConnected);
-        setIsInitialLoad(false);
-      }, 1000);
-      return () => clearTimeout(timer);
-    } else {
-      setShowError(!isConnected);
+    if (hasInitialDelayElapsed) {
+      return;
     }
-  }, [isConnected, isInitialLoad]);
+
+    const timer = setTimeout(() => setHasInitialDelayElapsed(true), 1000);
+    return () => clearTimeout(timer);
+  }, [hasInitialDelayElapsed]);
+
+  const showError = hasInitialDelayElapsed && !isConnected;
 
   // Effect for establishing a WebSocket connection and handling messages
   useEffect(() => {
